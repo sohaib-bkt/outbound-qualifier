@@ -4,7 +4,18 @@ import { cookies } from 'next/headers';
 export function createServerClient() {
   const store = cookies();
   return ssr(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-    cookies: { get: (k: string) => store.get(k)?.value, set() {}, remove() {} },
+    cookies: {
+      getAll() {
+        return store.getAll();
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => store.set(name, value, options));
+        } catch {
+          // Called from a Server Component without write access; middleware refreshes session.
+        }
+      },
+    },
   });
 }
 export function createServiceClient() {

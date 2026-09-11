@@ -1,9 +1,18 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  let res = NextResponse.next({ request: req });
   const supa = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-    cookies: { get: (k: string) => req.cookies.get(k)?.value, set: (k, v, o) => res.cookies.set(k, v, o), remove: (k, o) => res.cookies.set(k, '', o) },
+    cookies: {
+      getAll() {
+        return req.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+        res = NextResponse.next({ request: req });
+        cookiesToSet.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+      },
+    },
   });
   const { data } = await supa.auth.getUser();
   if (!data.user && (req.nextUrl.pathname === '/' || req.nextUrl.pathname.startsWith('/leads'))) {
