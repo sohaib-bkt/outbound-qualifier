@@ -1,5 +1,7 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createBrowserSupabase } from '@/lib/supabase/client';
 import SignalChain from './components/SignalChain';
 import StatusPill from './components/StatusPill';
 import ScoreBar from './components/ScoreBar';
@@ -12,6 +14,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ pending: 0, calling: 0, qualified: 0, total: 0, rate: 0 });
   const [leads, setLeads] = useState<Lead[]>([]);
   const [status, setStatus] = useState(''); const [q, setQ] = useState('');
+  const router = useRouter();
   const refresh = useCallback(async () => {
     const s = await (await fetch('/api/stats')).json(); setStats(s);
     const l = await (await fetch(`/api/leads?status=${status}&q=${encodeURIComponent(q)}`)).json(); setLeads(l.leads ?? []);
@@ -37,6 +40,12 @@ export default function Dashboard() {
           <div className="text-right rise">
             <p className="eyebrow text-ink/60">Close rate</p>
             <p className="font-display text-4xl sm:text-5xl font-bold tracking-tight tabular-nums">{(stats.rate * 100).toFixed(1)}<span className="text-signal">%</span></p>
+            <button
+              className="mt-2 font-mono text-[11px] uppercase tracking-wider text-ink/60 underline decoration-line underline-offset-4 hover:text-signal hover:decoration-signal transition-colors"
+              onClick={async () => { await createBrowserSupabase().auth.signOut(); router.push('/login'); }}
+            >
+              Log out
+            </button>
           </div>
         </div>
       </header>
