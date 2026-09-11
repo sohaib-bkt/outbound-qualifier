@@ -1,6 +1,7 @@
 # Signal Room — Outbound Qualifier
 
 Voice-AI pipeline: upload leads, dial them with Vapi, score transcripts with Groq, follow up by SMS via Twilio.
+<img width="1263" height="625" alt="image" src="https://github.com/user-attachments/assets/ca1bd597-f615-4697-9e03-078c516707b8" />
 
 ## Pipeline
 
