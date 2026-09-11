@@ -9,7 +9,10 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q');
   let query = supa.from('leads').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(200);
   if (status) query = query.eq('status', status);
-  if (q) query = query.or(`name.ilike.%${q}%,phone.ilike.%${q}%,company.ilike.%${q}%`);
+  if (q) {
+    const sanitized = q.replace(/[,()"'\*%_\\]/g, '').trim().slice(0, 100);
+    if (sanitized) query = query.or(`name.ilike.%${sanitized}%,phone.ilike.%${sanitized}%,company.ilike.%${sanitized}%`);
+  }
   const { data } = await query;
   return NextResponse.json({ leads: data ?? [] });
 }
