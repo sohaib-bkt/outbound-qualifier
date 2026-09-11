@@ -3,7 +3,7 @@ export type QualResult = { qualification_score: number; interest_level: string; 
 export async function analyzeTranscript(transcript: string): Promise<QualResult> {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   const completion = await groq.chat.completions.create({
-    model: process.env.GROQ_MODEL ?? 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL ?? 'openai/gpt-oss-20b',
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: 'You qualify outbound sales leads. Return JSON only: {qualification_score 0-100, interest_level high|medium|low, budget string|null, timeline string|null, call_summary string, qualified boolean}. qualified=true iff score>=70.' },

@@ -6,7 +6,9 @@ export async function dialLead(phone: string, name: string): Promise<string> {
       assistantId: process.env.VAPI_ASSISTANT_ID,
       phoneNumberId: process.env.VAPI_PHONE_NUMBER_ID,
       customer: { number: phone, name },
-      serverUrl: `${process.env.APP_BASE_URL}/api/webhooks/vapi`,
+      // NOTE: no per-call serverUrl — CreateCallDTO rejects it.
+      // Webhooks follow assistant.server.url > phoneNumber.serverUrl > org.serverUrl,
+      // so configure the Server URL + bearer credential in the Vapi dashboard.
     }),
   });
   if (!res.ok) throw new Error(`vapi dial failed: ${res.status} ${await res.text()}`);
