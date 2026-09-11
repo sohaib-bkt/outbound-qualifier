@@ -1,0 +1,1 @@
+{"message":{"call":{"id":"test-call-1"},"customer":{"number":"+15551234567"},"duration":120,"endedReason":"customer-ended-call","transcript":"Hi I am interested, budget 5k, next week","type":"end-of-call-report"}}
