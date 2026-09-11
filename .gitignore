@@ -36,3 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 opencode.json
+
+# internal planning docs (specs, plans) — local only
+docs/
